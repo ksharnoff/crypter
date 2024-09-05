@@ -50,7 +50,7 @@ func main() {
 
 	for fileName == "0" {
 		skipLine()
-		fmt.Println("Make sure the file is in the same folder as this program!\nJust write exactly what the file is named\nMake sure that you include the extension!\n\taka 'testing.pdf' not just 'testing'\nAlso make sure that there is no spaces in the file name!\n")
+		fmt.Println("Make sure the file is in the same folder as this program!\nJust write exactly what the file is named\nMake sure that you include the extension!\n\taka 'testing.pdf' not just 'testing'\nAlso make sure that there is no spaces in the file name!")
 		skipLine()
 		fmt.Print("What is the name of the file?: ")
 		fmt.Scan(&fileName)
@@ -69,32 +69,32 @@ func main() {
 		fmt.Scan(&action)
 		if action == 0 {
 			skipLine()
-			fmt.Print("Decrypt means to decode, make it a readable file.\nEncrypt does the opposite, it scrambles it.\nIf You chose decrypt and the file is not encrypted, the program will fail.")
+			fmt.Println("Decrypt means to decode, make it a readable file.\nEncrypt does the opposite, it scrambles it.\nIf you chose decrypt and the file is not encrypted, the program will fail.")
 		}
 	}
 
-	fmt.Print("After you press return on your password, it will disappear!")
+	fmt.Println("\nAfter you press return on your password, it will disappear!")
 	password := "0"
 	for password == "0" {
 		skipLine()
 		fmt.Println("What is your password?: ")
 		fmt.Scan(&password)
-		fmt.Print("\033[F\r", strings.Repeat(" ", len(password))) // deletes the password so its not in the terminal anymore
+		fmt.Print("\033[F\r", strings.Repeat(" ", len(password))) // writes over the password so its not in the terminal anymore
 		if password == "0" {
 			skipLine()
 			if action == 1 {
-				fmt.Print("This is the password that you used to encrypt this file previously.\nIf you do not know it, the file cannot be decrypted.")
+				fmt.Println("This is the password that you used to encrypt this file previously.\nIf you do not know it, the file cannot be decrypted.")
 			} else {
-				fmt.Print("This will be the password you must remember to get this file back.\nMaybe write it down somewhere?")
+				fmt.Println("This will be the password you must remember to get this file back.\nMaybe write it down somewhere?")
 			}
 		}
 		if len(password) < 6 {
-			fmt.Print("That password is too short, please use at least six characters!")
+			fmt.Println("That password is too short, please use at least six characters!")
 			password = "0"
 		}
 	}
 
-	fmt.Println("THINGS ARE HAPPENING - DO NOT QUIT THE PROGRAM")
+	fmt.Println("\nTHINGS ARE HAPPENING - DO NOT QUIT THE PROGRAM")
 
 	input, inputErr := os.ReadFile(fileName) // input is a [] of bytes
 
@@ -140,15 +140,15 @@ func main() {
 		} else { // it shouldn't get to this else, if it was encrypted by crypter!
 			_, foundYaml := strings.CutSuffix(newFileName, ".yaml") // if was encrypted by my pass manager will be 'testing.yaml', this will leave it as .yaml
 
-			if !foundYaml {
-				fmt.Println("Are you sure that you meant to Decrypt? Decyrypt (1) or encrypt (2)?: ") // because at this point it will have already decrypted
+			if !foundYaml { // the encrypted file didn't end in .txt or .yaml
+				fmt.Println("Are you sure that you meant to Decrypt? Decyrypt (1) or encrypt (2)?: ") // at this point it will have already decrypted
 				fmt.Scan(&action)
 
 				if action == 1 {
 					newFileName += ".txt"
 					fmt.Println("THINGS ARE HAPPENING - DO NOT QUIT THE PROGRAM")
 				} else {
-					printAndExit("Error! You changed your mind about decrypting")
+					printAndExit("Error! The file inputted wasn't encrypted by crypter in a format that can guarantee a file type! \nAnd you changed your mind about decrypting!")
 				}
 			}
 		}
@@ -169,6 +169,7 @@ func main() {
 	if action == 1 { // if decrypting
 		fmt.Println("By the way, if you got the password wrong, the file will be gibberish!")
 	}
+	fmt.Println("-----------")
 }
 
 func skipLine() {
