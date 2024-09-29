@@ -8,7 +8,7 @@ Look in the examples folder to see test.pdf turn into a gibberish text file and 
 ## encryption
 The password is made into a key with Argon2. The bytes of the file input are read, encrypted with AES-256, and written to a new file. 
 
-There are no checks if the user put in the correct password to decrypt, if the wrong password is put in, the resulting file will be nonsense. 
+There are no checks if the user put in the correct password to decrypt - if the wrong password is put in, the resulting file will be nonsense. 
 
 ## salt or no salt?
 There are two files that both encrypt files, `crypter.go` and `crypterDiffSalt.go`. 
