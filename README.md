@@ -13,7 +13,7 @@ There are no checks if the user put in the correct password to decrypt - if the 
 ## salt or no salt?
 There are two files that both encrypt files, `crypter.go` and `crypterDiffSalt.go`. 
 
-`crypter.go` uses the same salt everytime in the AES encryption. Theoretically, a single salt for all encryption has the downside that when re-encrypting the same file, a malicious actor can see where the changes occurred. However, in this block cipher uses a cryptographically random list of bytes as well. So, everytime you encrypt the same file with the same password, it outputs different results.
+`crypter.go` uses the same salt everytime in the AES encryption. Theoretically, a single salt for all encryption has the downside that when re-encrypting the same file, a malicious actor can see where the changes occurred. However, this block cipher uses a cryptographically random list of bytes. So, everytime you encrypt the same file with the same password, it outputs different results.
 
 `crypterDiffSalt.go` uses a different salt everytime in the AES encryption. Theoretically, a different salt for all encryption is the best practice, as the same file can be encrypted several times with the same password and it’ll look different. However, because of the random list of bytes mentioned above, there is no benefit to using `crypterDiffSalt.go`. 
 
