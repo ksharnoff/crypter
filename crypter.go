@@ -207,7 +207,8 @@ func keyGeneration(password string) cipher.Block {
 
 	// pass params: 4, 2048*1024, 4, 32 -- takes about 2 seconds
 	// crypter params: 2, 64*1024, 4, 32
-	key := argon2.IDKey([]byte(password), salt, 2, 64*1024, 4, 32)
+	// REDUCED crypter params: 1, 64*1024, 4, 32
+	key := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
 
 	ciphBlock, err := aes.NewCipher(key)
 
