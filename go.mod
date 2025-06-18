@@ -1,4 +1,4 @@
-module crypter
+module github.com/ksharnoff/crypter
 
 go 1.18
 

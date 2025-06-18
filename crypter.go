@@ -1,18 +1,22 @@
 /*
+MIT License
+Copyright (c) 2024 Kezia Sharnoff
+
+
 This program decrypts or encrypts a file with AES 256 encryption. It uses a
 single salt that is predetermined, as written in the function named
 keyGeneration.
 
 A single salt for all encryption has the upside that it is impossible to lose
 the salt, something that would make the file unable to be decrypted.
-Theoretically, the downside is that when re-encrypting the same file, a 
-malicious actor can see where any changes were. However, there is randomness 
+Theoretically, the downside is that when re-encrypting the same file, a
+malicious actor can see where any changes were. However, there is randomness
 in this encryption so it does not have that downside.
 
-This can take in a file of any type. The encryption will be written to a .txt 
-file. Then when decrypted, it will turn back to its original file type. If the 
-inputted encrypted file starts off at .yaml, the decrypted will remain .yaml. 
-This behavoir to do with .yaml is because of my password manager, 
+This can take in a file of any type. The encryption will be written to a .txt
+file. Then when decrypted, it will turn back to its original file type. If the
+inputted encrypted file starts off at .yaml, the decrypted will remain .yaml.
+This behavior to do with .yaml is because of my password manager,
 github.com/ksharnoff/pass.
 */
 
@@ -41,7 +45,15 @@ import (
 )
 
 func main() {
-	fmt.Print("-----------\nHello! These will be the steps:\n\tYou'll give the file name\n\tYou'll chose to encrypt or decrypt\n\tYou'll give your password\nA new file will have been made! Wooo!\nType 0 for help.\nType your answer, then hit enter\n-----------\n")
+	fmt.Println("-----------")
+	fmt.Println("Hello! These will be the steps:")
+	fmt.Println("\t- You'll write the file name")
+	fmt.Println("\t- You'll chose to encrypt or decrypt")
+	fmt.Println("\t- You'll write your password")
+	fmt.Println("A new file will have been made! Woo!")
+	fmt.Println("Type 0 for help.")
+	fmt.Println("Type your answers, then hit enter")
+	fmt.Println("-----------")
 	skipLine()
 
 	var fileName string
@@ -50,7 +62,11 @@ func main() {
 
 	for fileName == "0" {
 		skipLine()
-		fmt.Println("Make sure the file is in the same folder as this program!\nJust write exactly what the file is named\nMake sure that you include the extension!\n\taka 'testing.pdf' not just 'testing'\nAlso make sure that there is no spaces in the file name!")
+		fmt.Println("Make sure the file is in the same folder as this program!")
+		fmt.Println("Just write exactly what the file is named")
+		fmt.Println("Make sure that you include the extension!")
+		fmt.Println("\taka 'testing.pdf' not just 'testing'")
+		fmt.Println("Also make sure that there is no spaces in the file name!")
 		skipLine()
 		fmt.Print("What is the name of the file?: ")
 		fmt.Scan(&fileName)
@@ -65,11 +81,13 @@ func main() {
 	action := 0
 	for (action != 1) && (action != 2) {
 		skipLine()
-		fmt.Print("Decyrypt (1) or encrypt (2)?: ")
+		fmt.Print("Decrypt (1) or encrypt (2)?: ")
 		fmt.Scan(&action)
 		if action == 0 {
 			skipLine()
-			fmt.Println("Decrypt means to decode, make it a readable file.\nEncrypt does the opposite, it scrambles it.\nIf you chose decrypt and the file is not encrypted, the program will fail.")
+			fmt.Println("Decrypt means to decode, make it a readable file.")
+			fmt.Println("Encrypt does the opposite, it scrambles it.")
+			fmt.Println("If you chose decrypt and the file is not encrypted, the program will fail.")
 		}
 	}
 
@@ -83,9 +101,11 @@ func main() {
 		if password == "0" {
 			skipLine()
 			if action == 1 {
-				fmt.Println("This is the password that you used to encrypt this file previously.\nIf you do not know it, the file cannot be decrypted.")
+				fmt.Println("This is the password that you used to encrypt this file previously.")
+				fmt.Println("If you do not know it, the file cannot be decrypted.")
 			} else {
-				fmt.Println("This will be the password you must remember to get this file back.\nMaybe write it down somewhere?")
+				fmt.Println("This will be the password you must remember to get this file back.")
+				fmt.Println("Maybe write it down somewhere?")
 			}
 		}
 		if len(password) < 6 {
@@ -129,19 +149,23 @@ func main() {
 
 	// if the newFileName already exists then it adds a random two digits to the start
 	// so it would look like: 38e-testingtest.pdf.txt
-	for (doesFileExist(newFileName)) || (doesFileExist(newFileName + ".txt")) { // hopefully shouldn't need to repeat!
-		newFileName = strconv.Itoa(randNum()) + newFileName // adds a random two digits to the start
+	for (doesFileExist(newFileName)) || (doesFileExist(newFileName + ".txt")) {
+		newFileName = strconv.Itoa(randNum()) + newFileName
 	}
 
-	if action == 1 { // if decrypting, remove the .txt added when encrypted, making the file go back to its original status of .pdf, etc
+	// if decrypting, remove the .txt added when encrypted, making the file go
+	// back to its original status of .pdf, etc
+	if action == 1 {
 		beforeTxt, foundTxt := strings.CutSuffix(newFileName, ".txt")
 		if foundTxt { // if newFileName did end in ".txt"
 			newFileName = beforeTxt
 		} else { // it shouldn't get to this else, if it was encrypted by crypter!
-			_, foundYaml := strings.CutSuffix(newFileName, ".yaml") // if was encrypted by my pass manager will be 'testing.yaml', this will leave it as .yaml
+
+			// if was encrypted by my pass manager will be 'testing.yaml', this will leave it as .yaml
+			_, foundYaml := strings.CutSuffix(newFileName, ".yaml")
 
 			if !foundYaml { // the encrypted file didn't end in .txt or .yaml
-				fmt.Println("Are you sure that you meant to Decrypt? Decyrypt (1) or encrypt (2)?: ") // at this point it will have already decrypted
+				fmt.Println("Are you sure that you meant to Decrypt? Decrypt (1) or encrypt (2)?: ")
 				fmt.Scan(&action)
 
 				if action == 1 {
@@ -152,17 +176,20 @@ func main() {
 				}
 			}
 		}
-	} else { // if encrypting, add a .txt so it becomes a txt file
+	} else {
+		// if encrypting, add a .txt so it becomes a txt file
 		newFileName += ".txt"
 	}
 
-	writeErr := os.WriteFile(newFileName + ".tmp", outputToWrite, 0600) // 0600 is  permissions that only this user can read/write/excet to this file
+	// 0600 is the permissions that only this user can read, write, exec this file
+	writeErr := os.WriteFile(newFileName+".tmp", outputToWrite, 0700)
 
 	if writeErr != nil {
 		printAndExit("Error in os.WriteFile " + writeErr.Error())
 	}
 
-	os.Rename(newFileName + ".tmp", newFileName) // only will do this if previous writing worked
+	// only will happen if the previous writing succeeded, a fail safe
+	os.Rename(newFileName+".tmp", newFileName)
 
 	fmt.Println("All is done!")
 
@@ -184,19 +211,25 @@ func printAndExit(error string) {
 // returns bool for if a file exists (within the
 // directory / folder that this program is being run)
 func doesFileExist(fileName string) bool {
-	_, err := os.Stat(fileName)         // os.Stat is a function to get info about file, and can return error
-	if errors.Is(err, os.ErrNotExist) { // if the error is that the file doesn't exist
+	// os.Stat is a function to get info about file, and can return and error
+	// that the file doesn't exist
+	_, err := os.Stat(fileName)
+	if errors.Is(err, os.ErrNotExist) {
 		return false
 	}
 	return true
 }
 
+// Returns random int between 0 and 99, after seeding using the Unix time in
+// nanoseconds and the processing ID. This is just used for making unique
+// file names and therefore does not need to be cryptographically secure.
 func randNum() int {
 	mathRand.Seed(time.Now().UnixNano() ^ int64(os.Getpid()))
-	return mathRand.Intn(99) // should return number less than 99
+	return mathRand.Intn(99)
 }
 
-// Makes a key, then a cipher block.
+// Input: the user's password.
+// Output: cipher block made from a key from the password.
 func keyGeneration(password string) cipher.Block {
 	if len([]byte(password)) < 1 {
 		printAndExit("Error! The password for key generation is too short")
@@ -208,6 +241,7 @@ func keyGeneration(password string) cipher.Block {
 	// pass params: 4, 2048*1024, 4, 32 -- takes about 2 seconds
 	// crypter params: 2, 64*1024, 4, 32
 	// REDUCED crypter params: 1, 64*1024, 4, 32
+	// password, salt, time, memory, threads, keyLen
 	key := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
 
 	ciphBlock, err := aes.NewCipher(key)
@@ -218,15 +252,18 @@ func keyGeneration(password string) cipher.Block {
 	return ciphBlock
 }
 
-// returns an encrypted slice of bytes
+// Input: the plaintext slice and a cipher block.
+// Return: the encrypted bytes.
+// Encrypts a slice of bytes using the cipher block (from the key)
 func encrypt(plaintext []byte, ciphBlock cipher.Block) []byte {
 	// adds padding in form of "\n"
 	if len(plaintext)%aes.BlockSize != 0 {
 		for i := len(plaintext) % aes.BlockSize; i < aes.BlockSize; i++ {
-			plaintext = append(plaintext, 0x0A) // 0x0A = []byte("\n")
+			// 0x0A = []byte("\n")
+			plaintext = append(plaintext, 0x0A)
 		}
 	}
-	encrypt := make([]byte, aes.BlockSize + len(plaintext))
+	encrypt := make([]byte, aes.BlockSize+len(plaintext))
 
 	iv := encrypt[:aes.BlockSize]
 
@@ -243,8 +280,12 @@ func encrypt(plaintext []byte, ciphBlock cipher.Block) []byte {
 	return encrypt
 }
 
-
-// returns an unencrypted slice of bytes
+// Inputs the encrypted slice and a cipher block made from the same original
+// password.
+// Returns a decrypted slice.
+// Decrypts the encrypted bytes using the cipher block. If the cipher block
+// was made incorrectly, this will panic.
+// If the decryption failed (wrong password), nonsense will be returned.
 func decrypt(encrypted []byte, ciphBlock cipher.Block) []byte {
 	iv := encrypted[:aes.BlockSize]
 	encrypted = encrypted[aes.BlockSize:]
