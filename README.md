@@ -1,4 +1,6 @@
 # crypter
+[![Go Report Card](https://goreportcard.com/badge/github.com/ksharnoff/crypter)](https://goreportcard.com/report/github.com/ksharnoff/crypter)
+
 Creates an encrypted copy of a file. 
 
 ## what is this? 
